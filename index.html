@@ -448,54 +448,62 @@ if (aprendizGuardado) {
 </html></textarea>
 
             <h3>Archivo <code>JS/app2.js</code></h3>
-            <p>Un formulario puede tener varias casillas con el mismo <code>name</code>. Este código reúne los servicios seleccionados en un arreglo y muestra el último registro guardado.</p>
-            <textarea readonly rows="51">const formulario = document.querySelector("#formulario");
+            <p>Este código valida los campos, guarda los datos del formulario en <code>localStorage</code> y muestra el último registro guardado.</p>
+            <textarea readonly rows="54">const formulario = document.querySelector("#formulario");
 const resultado = document.querySelector("#resultado");
 
+
+// Guardar datos del formulario
 formulario.addEventListener("submit", function (event) {
+
     event.preventDefault();
 
     const datos = new FormData(formulario);
-    const mascota = {};
 
-    for (const [campo, valor] of datos.entries()) {
-        if (Object.prototype.hasOwnProperty.call(mascota, campo)) {
-            if (!Array.isArray(mascota[campo])) {
-                mascota[campo] = [mascota[campo]];
-            }
-            mascota[campo].push(valor);
-        } else {
-            mascota[campo] = valor;
+    let mascota = {};
+
+    // Validar y construir objeto
+    for (let [campo, valor] of datos.entries()) {
+
+        if (valor.trim() === "") {
+            alert(`El campo ${campo} está vacío`);
+            return;
         }
+
+        mascota[campo] = valor;
     }
 
+    // Guardar en localStorage
     localStorage.setItem("mascota", JSON.stringify(mascota));
-    mostrarMascota(mascota);
+
+    // Mostrar información actualizada
+    mostrarDatos();
+
 });
 
-function mostrarMascota(mascota) {
-    resultado.replaceChildren();
+// Función para mostrar los datos guardados
+function mostrarDatos() {
 
-    for (const campo in mascota) {
-        const fila = document.createElement("tr");
-        const celdaCampo = document.createElement("td");
-        const celdaValor = document.createElement("td");
+    let mascota = JSON.parse(localStorage.getItem("mascota"));
 
-        celdaCampo.textContent = campo;
-        celdaValor.textContent = Array.isArray(mascota[campo])
-            ? mascota[campo].join(", ")
-            : mascota[campo];
+    resultado.innerHTML = "";
 
-        fila.append(celdaCampo, celdaValor);
-        resultado.appendChild(fila);
+    if (mascota) {
+
+        for (let campo in mascota) {
+
+            resultado.innerHTML += `
+                <tr>
+                    <td>${campo}</td>
+                    <td>${mascota[campo]}</td>
+                </tr>
+            `;
+        }
     }
 }
 
-const mascotaGuardada = localStorage.getItem("mascota");
-
-if (mascotaGuardada) {
-    mostrarMascota(JSON.parse(mascotaGuardada));
-}</textarea>
+// Mostrar datos al cargar la página
+mostrarDatos();</textarea>
         </section>
 
         <section id="s5">
@@ -506,7 +514,7 @@ if (mascotaGuardada) {
                 <li>La ruta del script es correcta: <code>JS/app.js</code> o <code>JS/app2.js</code>.</li>
                 <li>Completa el formulario, envíalo y confirma que los datos aparecen.</li>
                 <li>Recarga la página y comprueba que se conserva el último registro.</li>
-                <li>En el ejercicio de mascotas, marca varios servicios para comprobar que se muestran todos.</li>
+                <li>En el ejercicio de mascotas, marca varios servicios y comprueba que se guarda el último valor del campo <code>servicios</code>.</li>
             </ol>
             <p class="nota"><strong>Importante:</strong> <code>localStorage</code> es útil para practicar, pero no es una base de datos. Los datos quedan guardados solo en el navegador y equipo donde se realizó la actividad.</p>
         </section>
