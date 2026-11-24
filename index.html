@@ -306,6 +306,11 @@ formulario.addEventListener("submit", function (event) {
 
     // Recorre los pares nombre/valor recibidos del formulario.
     for (const [campo, valor] of datos.entries()) {
+
+        if (valor.trim() === "") {
+            alert(`El campo ${campo} está vacío`);
+            return;
+        }
         aprendiz[campo] = valor;
     }
 
@@ -319,12 +324,10 @@ formulario.addEventListener("submit", function (event) {
 });
 
 function mostrarAprendiz(aprendiz) {
-    resultado.replaceChildren();
+    resultado.innerHTML = "";
 
     for (const campo in aprendiz) {
-        const parrafo = document.createElement("p");
-        parrafo.textContent = `${campo}: ${aprendiz[campo]}`;
-        resultado.appendChild(parrafo);
+        resultado.innerHTML += `<p>${campo}: ${aprendiz[campo]}</p>`;
     }
 }
 
